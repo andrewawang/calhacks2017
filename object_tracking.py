@@ -10,11 +10,11 @@ import settings
 settings.init()
 SCREEN_Y = 320
 SCREEN_X = 600
-SCALE_BOTTOM = 2
-SCALE_TOP = 0.1
+SCALE_BOTTOM = 2.0
+SCALE_TOP = 0.5
 SCALE_Y = (SCALE_BOTTOM - SCALE_TOP) / SCREEN_Y
-TEMPO_MIN = 0
-TEMPO_MAX = 15
+TEMPO_MIN = 7
+TEMPO_MAX = 17
 TEMPO_SCALE = (TEMPO_MAX - TEMPO_MIN) / 250.0
 
 def cam_run():
@@ -166,7 +166,7 @@ def cam_run():
 			break
 		speed = math.sqrt(dX*dX + dY*dY)
 		# print(" x: ", posX, " y:", posY, " speed:", speed)
-		if speed <= 15:
+		if speed <= 15 or (posX == 0 and posY == 0):
 			settings.TEMP = 0
 			settings.NOTE_DENSITY = 0
 		else:

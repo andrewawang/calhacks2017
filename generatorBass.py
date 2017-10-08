@@ -22,15 +22,16 @@ DEFAULT_SAMPLE_RATE = 44100
 SAMPLE_MULT = 1
 DURATION = 2.5
 # TEMP = 0.3
-SLEEP_TIME = 0.7 * SAMPLE_MULT * DURATION
+SLEEP_TIME = 1 * SAMPLE_MULT * DURATION
 BUNDLE_DIR = '/Users/wangan/Documents/calhacks2017/magenta/'
 MODEL_NAME = 'multiconditioned_performance_with_dynamics'
 BUNDLE_NAME = MODEL_NAME + '.mag'
 PLAYING_MUSIC1 = False
 PLAYING_MUSIC2 = False
-SF2_DIR =  '/Users/wangan/Documents/calhacks2017/126 Hip Hop Soundfonts/'
-SF2_FILE = "Hip Hop Combo.sf2"
+SF2_DIR =  '/Users/wangan/Documents/calhacks2017/'
+SF2_FILE = "violin.sf2"
 SF2_PATH = SF2_DIR + SF2_FILE
+REDUCTION = 4
 settings.init()
 
 def alternate_keys():
@@ -91,7 +92,7 @@ def generate_music():
 
 	i = 1
 	while(True):
-		performance_sequence_generator.DEFAULT_NOTE_DENSITY = settings.NOTE_DENSITY / 2
+		performance_sequence_generator.DEFAULT_NOTE_DENSITY = settings.NOTE_DENSITY / REDUCTION
 		performance_sequence_generator.DEFAULT_PITCH_HISTOGRAM = settings.PITCH
 		while PLAYING_MUSIC1:
 			time.sleep(0.00001)
@@ -125,7 +126,7 @@ def generate_music():
 		del sequenceNew
 		i += 1
 
-		performance_sequence_generator.DEFAULT_NOTE_DENSITY = settings.NOTE_DENSITY / 2
+		performance_sequence_generator.DEFAULT_NOTE_DENSITY = settings.NOTE_DENSITY / REDUCTION
 		performance_sequence_generator.DEFAULT_PITCH_HISTOGRAM = settings.PITCH
 		while PLAYING_MUSIC2:
 			time.sleep(0.00001)

@@ -22,14 +22,14 @@ DEFAULT_SAMPLE_RATE = 44100
 SAMPLE_MULT = 1
 DURATION = 2.5
 # TEMP = 0.3
-SLEEP_TIME = 1 * SAMPLE_MULT * DURATION
+SLEEP_TIME = 0.7 * SAMPLE_MULT * DURATION
 BUNDLE_DIR = '/Users/wangan/Documents/calhacks2017/magenta/'
 MODEL_NAME = 'multiconditioned_performance_with_dynamics'
 BUNDLE_NAME = MODEL_NAME + '.mag'
 PLAYING_MUSIC1 = False
 PLAYING_MUSIC2 = False
 SF2_DIR =  '/Users/wangan/Documents/calhacks2017/20 Synth Soundfonts/'
-SF2_FILE = "Dance Trance.sf2"
+SF2_FILE = "Acid SQ Neutral.sf2"
 SF2_PATH = SF2_DIR + SF2_FILE
 settings.init()
 
@@ -82,7 +82,7 @@ def generate_music():
 	# mm.play_sequence(sequence, mm.midi_synth.fluidsynth, sample_rate=DEFAULT_SAMPLE_RATE * SAMPLE_MULT)
 
 	sample_rate=DEFAULT_SAMPLE_RATE * SAMPLE_MULT
-	array_of_floats = mm.midi_synth.fluidsynth(sequence, sample_rate=sample_rate, sf2_path=SF2_PATH)
+	array_of_floats = mm.midi_synth.fluidsynth(sequence, sample_rate=sample_rate, sf2_path=settings.SF2_PATH)
 	write('/Users/wangan/Documents/calhacks2017/temp1.wav', 44100, array_of_floats)
 	# audio_killed = int(sample_rate * 1)
 	# array_of_floats = array_of_floats[audio_killed:]
@@ -113,7 +113,7 @@ def generate_music():
 		# mm.play_sequence(sequence, mm.midi_synth.fluidsynth, sample_rate=DEFAULT_SAMPLE_RATE * SAMPLE_MULT)
 
 		sample_rate= DEFAULT_SAMPLE_RATE * SAMPLE_MULT
-		array_of_floats = mm.midi_synth.fluidsynth(sequenceNew, sample_rate=sample_rate, sf2_path=SF2_PATH)
+		array_of_floats = mm.midi_synth.fluidsynth(sequenceNew, sample_rate=sample_rate, sf2_path=settings.SF2_PATH)
 		sequence = sequenceNew
 
 		# audio_killed = int(sample_rate * 1.5)
@@ -151,7 +151,7 @@ def generate_music():
 		# mm.play_sequence(sequence, mm.midi_synth.fluidsynth, sample_rate=DEFAULT_SAMPLE_RATE * SAMPLE_MULT)
 
 		sample_rate= DEFAULT_SAMPLE_RATE * SAMPLE_MULT
-		array_of_floats2 = mm.midi_synth.fluidsynth(sequenceNew, sample_rate=sample_rate, sf2_path=SF2_PATH)
+		array_of_floats2 = mm.midi_synth.fluidsynth(sequenceNew, sample_rate=sample_rate, sf2_path=settings.SF2_PATH)
 		sequence = sequenceNew
 
 		# audio_killed = int(sample_rate * 1.5)
