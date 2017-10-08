@@ -20,14 +20,17 @@ from playsound import playsound as ps
 # Constants.
 DEFAULT_SAMPLE_RATE = 44100
 SAMPLE_MULT = 1
-DURATION = 4
+DURATION = 2.5
 # TEMP = 0.3
-SLEEP_TIME = 0.7 * SAMPLE_MULT * DURATION
+SLEEP_TIME = 1 * SAMPLE_MULT * DURATION
 BUNDLE_DIR = '/Users/wangan/Documents/calhacks2017/magenta/'
 MODEL_NAME = 'multiconditioned_performance_with_dynamics'
 BUNDLE_NAME = MODEL_NAME + '.mag'
 PLAYING_MUSIC1 = False
 PLAYING_MUSIC2 = False
+SF2_DIR =  '/Users/wangan/Documents/calhacks2017/20 Synth Soundfonts/'
+SF2_FILE = "Dance Trance.sf2"
+SF2_PATH = SF2_DIR + SF2_FILE
 settings.init()
 
 def alternate_keys():
@@ -46,9 +49,7 @@ def play_music1():
 	while True:
 		while not PLAYING_MUSIC1:
 			time.sleep(0.00001)
-		print("RIGHT BEFORE PLAYING 1!!")
 		ps.playsound("/Users/wangan/Documents/calhacks2017/temp1.wav")
-		print("RIGHT AFTER PLAYING 1!!")
 		# PLAYING_MUSIC1 = False
 		# PLAYING_MUSIC2 = True
 
@@ -57,15 +58,14 @@ def play_music2():
 	while True:
 		while not PLAYING_MUSIC2:
 			time.sleep(0.00001)
-		print("RIGHT BEFORE PLAYING 2!!")
 		ps.playsound("/Users/wangan/Documents/calhacks2017/temp2.wav")
-		print("RIGHT AFTER PLAYING 2!!")
 		# PLAYING_MUSIC2 = False
 		# PLAYING_MUSIC1 = True
 
 def generate_music():
 	global PLAYING_MUSIC1
 	global PLAYING_MUSIC2
+	mm.musicxml_parser.DEFAULT_MIDI_PROGRAM = 3
 	mm.notebook_utils.download_bundle(BUNDLE_NAME, BUNDLE_DIR)
 	bundle = mm.sequence_generator_bundle.read_bundle_file(os.path.join(BUNDLE_DIR, BUNDLE_NAME))
 	generator_map = performance_sequence_generator.get_generator_map()
@@ -82,8 +82,8 @@ def generate_music():
 	# mm.play_sequence(sequence, mm.midi_synth.fluidsynth, sample_rate=DEFAULT_SAMPLE_RATE * SAMPLE_MULT)
 
 	sample_rate=DEFAULT_SAMPLE_RATE * SAMPLE_MULT
-	array_of_floats = mm.midi_synth.fluidsynth(sequence, sample_rate=sample_rate)
-
+	array_of_floats = mm.midi_synth.fluidsynth(sequence, sample_rate=sample_rate, sf2_path=SF2_PATH)
+	write('/Users/wangan/Documents/calhacks2017/temp1.wav', 44100, array_of_floats)
 	# audio_killed = int(sample_rate * 1)
 	# array_of_floats = array_of_floats[audio_killed:]
 
@@ -91,6 +91,11 @@ def generate_music():
 
 	i = 1
 	while(True):
+		performance_sequence_generator.DEFAULT_NOTE_DENSITY = settings.NOTE_DENSITY
+		performance_sequence_generator.DEFAULT_PITCH_HISTOGRAM = settings.PITCH
+		print("TEMP IS ", settings.TEMP)
+		print("TEMPO IS ", settings.NOTE_DENSITY)
+		print("PITCH IS ", settings.PITCH)
 		while PLAYING_MUSIC1:
 			time.sleep(0.00001)
 		array_of_floats = []
@@ -108,7 +113,7 @@ def generate_music():
 		# mm.play_sequence(sequence, mm.midi_synth.fluidsynth, sample_rate=DEFAULT_SAMPLE_RATE * SAMPLE_MULT)
 
 		sample_rate= DEFAULT_SAMPLE_RATE * SAMPLE_MULT
-		array_of_floats = mm.midi_synth.fluidsynth(sequenceNew, sample_rate=sample_rate)
+		array_of_floats = mm.midi_synth.fluidsynth(sequenceNew, sample_rate=sample_rate, sf2_path=SF2_PATH)
 		sequence = sequenceNew
 
 		# audio_killed = int(sample_rate * 1.5)
@@ -116,7 +121,6 @@ def generate_music():
 		array_of_floats = array_of_floats[old_array_size:]
 		# print("Length of the array before deletion: ", len(array_of_floats))
 		# array_of_floats = array_of_floats[:-audio_killed]
-		print("Length of the array1: ", len(array_of_floats))	
 		write('/Users/wangan/Documents/calhacks2017/temp1.wav', 44100, array_of_floats)
 		del generator_map2
 		del generator2
@@ -125,9 +129,14 @@ def generate_music():
 		del sequenceNew
 		i += 1
 
+		performance_sequence_generator.DEFAULT_NOTE_DENSITY = settings.NOTE_DENSITY
+		performance_sequence_generator.DEFAULT_PITCH_HISTOGRAM = settings.PITCH
+		print("TEMP IS ", settings.TEMP)
+		print("TEMPO IS ", settings.NOTE_DENSITY)
+		print("PITCH IS ", settings.PITCH)
 		while PLAYING_MUSIC2:
 			time.sleep(0.00001)
-		array_of_floats = []
+		array_of_floats2 = []
 		generator_map2 = performance_sequence_generator.get_generator_map()
 		generator2 = generator_map2[MODEL_NAME](checkpoint=None, bundle=bundle)
 		generator2.initialize()
@@ -142,16 +151,15 @@ def generate_music():
 		# mm.play_sequence(sequence, mm.midi_synth.fluidsynth, sample_rate=DEFAULT_SAMPLE_RATE * SAMPLE_MULT)
 
 		sample_rate= DEFAULT_SAMPLE_RATE * SAMPLE_MULT
-		array_of_floats = mm.midi_synth.fluidsynth(sequenceNew, sample_rate=sample_rate)
+		array_of_floats2 = mm.midi_synth.fluidsynth(sequenceNew, sample_rate=sample_rate, sf2_path=SF2_PATH)
 		sequence = sequenceNew
 
 		# audio_killed = int(sample_rate * 1.5)
 		old_array_size = int(sample_rate * DURATION * i)
-		array_of_floats = array_of_floats[old_array_size:]
+		array_of_floats2 = array_of_floats2[old_array_size:]
 		# array_of_floats = array_of_floats[:-audio_killed]
 
-		print("Length of the array2: ", len(array_of_floats))	
-		write('/Users/wangan/Documents/calhacks2017/temp2.wav', 44100, array_of_floats)
+		write('/Users/wangan/Documents/calhacks2017/temp2.wav', 44100, array_of_floats2)
 		del generator_map2
 		del generator2
 		del generator_options2

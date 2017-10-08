@@ -1,3 +1,9 @@
 def init():
 	global TEMP
-	TEMP = 0.6
+	global NOTE_DENSITY
+	global PITCH
+	global SF2_PATH
+	TEMP = 0.1
+	NOTE_DENSITY = 4
+	NOTE_DENSITY_BEATS = 2
+	PITCH = [0.125, 0.025, 0.125, 0.025, 0.125, 0.125, 0.025, 0.125, 0.025, 0.125, 0.025, 0.125]
