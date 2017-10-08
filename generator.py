@@ -21,15 +21,16 @@ from playsound import playsound as ps
 DEFAULT_SAMPLE_RATE = 44100
 SAMPLE_MULT = 1
 DURATION = 2.5
-# TEMP = 0.3
+# TEMP = 0.
+FRACTION = 0.75
 SLEEP_TIME = 0.7 * SAMPLE_MULT * DURATION
 BUNDLE_DIR = '/Users/wangan/Documents/calhacks2017/magenta/'
 MODEL_NAME = 'multiconditioned_performance_with_dynamics'
 BUNDLE_NAME = MODEL_NAME + '.mag'
 PLAYING_MUSIC1 = False
 PLAYING_MUSIC2 = False
-SF2_DIR =  '/Users/wangan/Documents/calhacks2017/20 Synth Soundfonts/'
-SF2_FILE = "Acid SQ Neutral.sf2"
+SF2_DIR =  '/Users/wangan/Documents/calhacks2017/'
+SF2_FILE = ""
 SF2_PATH = SF2_DIR + SF2_FILE
 settings.init()
 
@@ -49,7 +50,7 @@ def play_music1():
 	while True:
 		while not PLAYING_MUSIC1:
 			time.sleep(0.00001)
-		ps.playsound("/Users/wangan/Documents/calhacks2017/temp1.wav")
+		ps.playsound("/Users/wangan/Documents/calhacks2017/temp_wav/temp1.wav")
 		# PLAYING_MUSIC1 = False
 		# PLAYING_MUSIC2 = True
 
@@ -58,7 +59,7 @@ def play_music2():
 	while True:
 		while not PLAYING_MUSIC2:
 			time.sleep(0.00001)
-		ps.playsound("/Users/wangan/Documents/calhacks2017/temp2.wav")
+		ps.playsound("/Users/wangan/Documents/calhacks2017/temp_wav/temp2.wav")
 		# PLAYING_MUSIC2 = False
 		# PLAYING_MUSIC1 = True
 
@@ -76,18 +77,10 @@ def generate_music():
 	generate_section = generator_options.generate_sections.add(start_time=0, end_time=DURATION)
 	sequence = generator.generate(music_pb2.NoteSequence(), generator_options)
 
-	# Play and view this masterpiece.
-	mm.plot_sequence(sequence)
-	# audio_object = modified_play_sequence(sequence, mm.midi_synth.fluidsynth, sample_rate=DEFAULT_SAMPLE_RATE * SAMPLE_MULT)
-	# mm.play_sequence(sequence, mm.midi_synth.fluidsynth, sample_rate=DEFAULT_SAMPLE_RATE * SAMPLE_MULT)
-
 	sample_rate=DEFAULT_SAMPLE_RATE * SAMPLE_MULT
 	array_of_floats = mm.midi_synth.fluidsynth(sequence, sample_rate=sample_rate, sf2_path=settings.SF2_PATH)
-	write('/Users/wangan/Documents/calhacks2017/temp1.wav', 44100, array_of_floats)
-	# audio_killed = int(sample_rate * 1)
-	# array_of_floats = array_of_floats[audio_killed:]
+	write('/Users/wangan/Documents/calhacks2017/temp_wav/temp1.wav', 44100, array_of_floats)
 
-	# IPython.display.Audio(array_of_floats, rate=sample_rate, autoplay=True)
 
 	i = 1
 	while(True):
@@ -96,6 +89,7 @@ def generate_music():
 		print("TEMP IS ", settings.TEMP)
 		print("TEMPO IS ", settings.NOTE_DENSITY)
 		print("PITCH IS ", settings.PITCH)
+		print("NoteSequence: ", len(sequence.notes))
 		while PLAYING_MUSIC1:
 			time.sleep(0.00001)
 		array_of_floats = []
@@ -107,21 +101,14 @@ def generate_music():
 		generate_section = generator_options2.generate_sections.add(start_time=(i*DURATION), end_time=(i+1)*DURATION)
 		sequenceNew = generator2.generate(sequence, generator_options2)
 
-		# Play and view this masterpiece.
-		mm.plot_sequence(sequenceNew)
-		# audio_object = modified_play_sequence(sequence, mm.midi_synth.fluidsynth, sample_rate=DEFAULT_SAMPLE_RATE * SAMPLE_MULT)
-		# mm.play_sequence(sequence, mm.midi_synth.fluidsynth, sample_rate=DEFAULT_SAMPLE_RATE * SAMPLE_MULT)
-
 		sample_rate= DEFAULT_SAMPLE_RATE * SAMPLE_MULT
 		array_of_floats = mm.midi_synth.fluidsynth(sequenceNew, sample_rate=sample_rate, sf2_path=settings.SF2_PATH)
 		sequence = sequenceNew
+		sequence.notes._values = sequence.notes._values[int(FRACTION * len(sequence.notes)):len(sequence.notes)]
 
-		# audio_killed = int(sample_rate * 1.5)
 		old_array_size = int(sample_rate * DURATION * i)
 		array_of_floats = array_of_floats[old_array_size:]
-		# print("Length of the array before deletion: ", len(array_of_floats))
-		# array_of_floats = array_of_floats[:-audio_killed]
-		write('/Users/wangan/Documents/calhacks2017/temp1.wav', 44100, array_of_floats)
+		write('/Users/wangan/Documents/calhacks2017/temp_wav/temp1.wav', 44100, array_of_floats)
 		del generator_map2
 		del generator2
 		del generator_options2
@@ -145,21 +132,17 @@ def generate_music():
 		generate_section = generator_options2.generate_sections.add(start_time=(i*DURATION), end_time=(i+1)*DURATION)
 		sequenceNew = generator2.generate(sequence, generator_options2)
 
-		# Play and view this masterpiece.
-		mm.plot_sequence(sequenceNew)
-		# audio_object = modified_play_sequence(sequence, mm.midi_synth.fluidsynth, sample_rate=DEFAULT_SAMPLE_RATE * SAMPLE_MULT)
-		# mm.play_sequence(sequence, mm.midi_synth.fluidsynth, sample_rate=DEFAULT_SAMPLE_RATE * SAMPLE_MULT)
-
 		sample_rate= DEFAULT_SAMPLE_RATE * SAMPLE_MULT
 		array_of_floats2 = mm.midi_synth.fluidsynth(sequenceNew, sample_rate=sample_rate, sf2_path=settings.SF2_PATH)
 		sequence = sequenceNew
+		sequence.notes._values = sequence.notes._values[int(FRACTION * len(sequence.notes)):len(sequence.notes)]
 
 		# audio_killed = int(sample_rate * 1.5)
 		old_array_size = int(sample_rate * DURATION * i)
 		array_of_floats2 = array_of_floats2[old_array_size:]
 		# array_of_floats = array_of_floats[:-audio_killed]
 
-		write('/Users/wangan/Documents/calhacks2017/temp2.wav', 44100, array_of_floats2)
+		write('/Users/wangan/Documents/calhacks2017/temp_wav/temp2.wav', 44100, array_of_floats2)
 		del generator_map2
 		del generator2
 		del generator_options2

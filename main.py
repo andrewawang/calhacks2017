@@ -1,14 +1,17 @@
 import settings
 import generator
 import generatorBass
+import generatorViolin
 import threading
 import time
-import object_tracking
+from vision import object_tracking
 
 settings.init()
 
-musicThread = threading.Thread(target=generator.run)
-musicThread.start()
-bassThread = threading.Thread(target=generatorBass.run)
-bassThread.start()
+pianoThread = threading.Thread(target=generator.run)
+pianoThread.start()
+saxThread = threading.Thread(target=generatorBass.run)
+# saxThread.start()
+violinThread = threading.Thread(target=generatorViolin.run)
+violinThread.start()
 object_tracking.cam_run()
